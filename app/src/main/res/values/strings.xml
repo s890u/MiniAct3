@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="language">Current language: English</string>
+    <string name="hello">Hello World!!</string>
+    <string name="current">Current Population: </string>
+    <string name="calculate">Predict expected population</string>
+    <string name="expected">Expected population by 2050: </string>
+</resources>
