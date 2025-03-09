@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -18,7 +19,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.example.myapplication.ui.theme.Landscape
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import java.util.Locale
 
@@ -26,14 +26,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val configuration = LocalConfiguration.current
-            val isLandscape = configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
-            if (isLandscape) {
-                Landscape().myApp()
-            }else{
-                myApp()
-            }
+            myApp()
         }
+    }
 }
 
 @Preview
@@ -51,15 +46,36 @@ fun myApp() {
 
 @Composable
 fun WellnessScreen() {
-    Column(modifier = Modifier.padding(16.dp)) {
-        StatefulCounter()
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
+    if (isLandscape) {
+        Row(modifier = Modifier.padding(16.dp)) {
+            Box(modifier = Modifier.weight(1f)) {
+                StatefulCounter()
+            }
+            Image(
+                painter = painterResource(id = R.drawable.flag),
+                contentDescription = "Imagen bandera",
+                modifier = Modifier
+                    .weight(1f)
+                    .height(150.dp)
+                    .padding(top = 30.dp)
+            )
+        }
+    } else {
+        Column(modifier = Modifier.padding(16.dp)) {
+            StatefulCounter()
+            Image(
+                painter = painterResource(id = R.drawable.flag),
+                contentDescription = "Imagen bandera",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(150.dp)
+                    .padding(top = 30.dp)
+            )
+        }
     }
-    Image(
-        painter = painterResource(id = R.drawable.flag),
-        contentDescription = "Imagen bandera",
-        modifier = Modifier.fillMaxWidth().height(150.dp).padding(top = 30.dp)
-    )
 }
 
 @Composable
@@ -90,9 +106,7 @@ fun StatefulCounter() {
         currentYear += 1
         val predictedPopulation = (waterCount * Math.pow(creixement, (currentYear - 2025).toDouble())).toLong()
         populationPrediction = "$currentYear: $predictedPopulation"
-
     }
-
 
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         Text(text = stringResource(R.string.language))
@@ -104,7 +118,7 @@ fun StatefulCounter() {
         ) {
             Text(text = stringResource(R.string.hello))
         }
-        StatelessCounter(waterCount, { waterCount++ },result = populationPrediction)
+        StatelessCounter(waterCount, { waterCount++ }, result = populationPrediction)
         Button(
             onClick = { calculatePrediction() },
             modifier = Modifier
@@ -114,7 +128,6 @@ fun StatefulCounter() {
             Text(text = stringResource(R.string.calculate))
         }
     }
-}
 }
 
 
