@@ -11,19 +11,27 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.example.myapplication.ui.theme.Landscape
 import com.example.myapplication.ui.theme.MyApplicationTheme
+import java.util.Locale
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            myApp()
+            val configuration = LocalConfiguration.current
+            val isLandscape = configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
+            if (isLandscape) {
+                Landscape().myApp()
+            }else{
+                myApp()
             }
         }
 }
@@ -72,11 +80,19 @@ fun StatefulCounter() {
     var currentYear by rememberSaveable { mutableStateOf(2025) }
 
     fun calculatePrediction() {
-        val creixement = 1.02 // +2%
+        val local = Locale.getDefault().language
+        val creixement = when (local){
+            "en" -> 1.05
+            "es" -> 1.1
+            else -> 1.0
+        }
+
         currentYear += 1
         val predictedPopulation = (waterCount * Math.pow(creixement, (currentYear - 2025).toDouble())).toLong()
         populationPrediction = "$currentYear: $predictedPopulation"
+
     }
+
 
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         Text(text = stringResource(R.string.language))
@@ -98,6 +114,7 @@ fun StatefulCounter() {
             Text(text = stringResource(R.string.calculate))
         }
     }
+}
 }
 
 
