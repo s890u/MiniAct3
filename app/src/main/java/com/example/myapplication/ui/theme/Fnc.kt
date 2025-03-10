@@ -1,22 +1,21 @@
 package com.example.myapplication.ui.theme
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.example.myapplication.R
-import java.util.Locale
 
 class Fnc { //Funcions
 
@@ -26,6 +25,7 @@ class Fnc { //Funcions
             painter = painterResource(id = R.drawable.flag),
             contentDescription = "Imagen bandera",
             modifier = Modifier.fillMaxWidth().fillMaxSize()
+                .padding(100.dp)
         )
     }
 
@@ -35,6 +35,4 @@ class Fnc { //Funcions
         Text(text = stringResource(R.string.hello), modifier = Modifier.padding(top =20.dp))
         Text("${stringResource(R.string.current)} ${integerResource(R.integer.poblacio)}", modifier = Modifier.padding(top = 20.dp))
     }
-
-
 }

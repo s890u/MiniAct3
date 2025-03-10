@@ -3,13 +3,10 @@ package com.example.myapplication
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -22,10 +19,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.integerResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -65,9 +60,9 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun StatelessCounter(onIncrement: () -> Unit, modifier: Modifier = Modifier, result: String?) {
-        Column(modifier = modifier.padding(16.dp)) {
+        Column(modifier = modifier.padding(top = 16.dp)) {
             result?.let {
-                Text("${stringResource(R.string.expected)} $result", modifier = Modifier.padding(top = 16.dp))
+                Text("${stringResource(R.string.expected)} $result", modifier = Modifier.padding(bottom = 20.dp, top = 10.dp))
             }
         }
     }
@@ -80,12 +75,13 @@ class MainActivity : ComponentActivity() {
         val integer = integerResource(R.integer.poblacio)
         var poblac by rememberSaveable { mutableStateOf(integer) }
         var populationPrediction by rememberSaveable { mutableStateOf<String?>(null) }
+        var multiplicador by rememberSaveable { mutableStateOf<String?>(null) }
         var currentYear by rememberSaveable { mutableStateOf(2025) }
 
         fun calculatePrediction() {
             val local = Locale.getDefault().language
             val creixement = when (local){
-                "en" -> 1.05
+                "en" -> 1.5
                 "es" -> 1.1
                 else -> 1.0
             }
@@ -93,7 +89,13 @@ class MainActivity : ComponentActivity() {
             currentYear += 1
             val predictedPopulation = (poblac * creixement * (currentYear - 2025).toDouble()).toLong()
             populationPrediction = "$currentYear: $predictedPopulation"
+        }
 
+        val local = Locale.getDefault().language
+        multiplicador = when (local){
+            "en" -> 1.5.toString()
+            "es" -> 1.1.toString()
+            else -> 1.0.toString()
         }
 
 
@@ -109,7 +111,12 @@ class MainActivity : ComponentActivity() {
                 ) {
                     Text(text = stringResource(R.string.calculate))
                 }
+                multiplicador?.let{
+                    Text("M: $multiplicador", modifier = Modifier.padding(bottom = 20.dp, top = 10.dp))
+                }
                 Fnc().callImg()
+
+
             }
         }else{
             Row(modifier = Modifier.fillMaxWidth()) {
@@ -119,6 +126,9 @@ class MainActivity : ComponentActivity() {
                     Button(onClick = { calculatePrediction() }) {
                         Text(text = stringResource(R.string.calculate))
                     }
+                }
+                multiplicador?.let{
+                    Text("M: $multiplicador", modifier = Modifier.padding(bottom = 20.dp, top = 10.dp))
                 }
                 Fnc().callImg()
             }
