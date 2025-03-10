@@ -1,24 +1,35 @@
 package com.example.myapplication
 
-import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
+import com.example.myapplication.ui.theme.Fnc
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import java.util.Locale
 
@@ -26,110 +37,93 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            myApp()
+                myApp()
+
         }
     }
-}
 
-@Preview
-@Composable
-fun myApp() {
-    MyApplicationTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            WellnessScreen()
-        }
-    }
-}
-
-@Composable
-fun WellnessScreen() {
-    val configuration = LocalConfiguration.current
-    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-
-    if (isLandscape) {
-        Row(modifier = Modifier.padding(16.dp)) {
-            Box(modifier = Modifier.weight(1f)) {
-                StatefulCounter()
+    @Preview
+    @Composable
+    fun myApp() {
+        MyApplicationTheme {
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = MaterialTheme.colorScheme.background
+            ) {
+                WellnessScreen()
             }
-            Image(
-                painter = painterResource(id = R.drawable.flag),
-                contentDescription = "Imagen bandera",
-                modifier = Modifier
-                    .weight(1f)
-                    .height(150.dp)
-                    .padding(top = 30.dp)
-            )
         }
-    } else {
+    }
+
+    @Composable
+    fun WellnessScreen() {
         Column(modifier = Modifier.padding(16.dp)) {
             StatefulCounter()
-            Image(
-                painter = painterResource(id = R.drawable.flag),
-                contentDescription = "Imagen bandera",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp)
-                    .padding(top = 30.dp)
-            )
+
+        }
+    }
+
+    @Composable
+    fun StatelessCounter(onIncrement: () -> Unit, modifier: Modifier = Modifier, result: String?) {
+        Column(modifier = modifier.padding(16.dp)) {
+            result?.let {
+                Text("${stringResource(R.string.expected)} $result", modifier = Modifier.padding(top = 16.dp))
+            }
+        }
+    }
+
+    @Composable
+    fun StatefulCounter() {
+        val configuration = LocalConfiguration.current
+        val isLandscape = configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
+
+        val integer = integerResource(R.integer.poblacio)
+        var poblac by rememberSaveable { mutableStateOf(integer) }
+        var populationPrediction by rememberSaveable { mutableStateOf<String?>(null) }
+        var currentYear by rememberSaveable { mutableStateOf(2025) }
+
+        fun calculatePrediction() {
+            val local = Locale.getDefault().language
+            val creixement = when (local){
+                "en" -> 1.05
+                "es" -> 1.1
+                else -> 1.0
+            }
+
+            currentYear += 1
+            val predictedPopulation = (poblac * creixement * (currentYear - 2025).toDouble()).toLong()
+            populationPrediction = "$currentYear: $predictedPopulation"
+
+        }
+
+
+        if (!isLandscape){
+            Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                Fnc().callText()
+                StatelessCounter({ poblac++ },result = populationPrediction)
+                Button(
+                    onClick = { calculatePrediction() },
+                    modifier = Modifier
+                        .padding(top = 16.dp)
+                        .fillMaxWidth()
+                ) {
+                    Text(text = stringResource(R.string.calculate))
+                }
+                Fnc().callImg()
+            }
+        }else{
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Column {
+                    Fnc().callText()
+                    StatelessCounter({ poblac++ },result = populationPrediction)
+                    Button(onClick = { calculatePrediction() }) {
+                        Text(text = stringResource(R.string.calculate))
+                    }
+                }
+                Fnc().callImg()
+            }
         }
     }
 }
-
-@Composable
-fun StatelessCounter(count: Int, onIncrement: () -> Unit, modifier: Modifier = Modifier, result: String?) {
-    Column(modifier = modifier.padding(16.dp)) {
-        Text("${stringResource(R.string.current)} $count")
-        result?.let {
-            Text("${stringResource(R.string.expected)} $result", modifier = Modifier.padding(top = 16.dp))
-        }
-    }
-}
-
-@Composable
-fun StatefulCounter() {
-    val integer = integerResource(R.integer.poblacio)
-    var waterCount by rememberSaveable { mutableStateOf(integer) }
-    var populationPrediction by rememberSaveable { mutableStateOf<String?>(null) }
-    var currentYear by rememberSaveable { mutableStateOf(2025) }
-
-    fun calculatePrediction() {
-        val local = Locale.getDefault().language
-        val creixement = when (local){
-            "en" -> 1.05
-            "es" -> 1.1
-            else -> 1.0
-        }
-
-        currentYear += 1
-        val predictedPopulation = (waterCount * Math.pow(creixement, (currentYear - 2025).toDouble())).toLong()
-        populationPrediction = "$currentYear: $predictedPopulation"
-    }
-
-    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = stringResource(R.string.language))
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 40.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(text = stringResource(R.string.hello))
-        }
-        StatelessCounter(waterCount, { waterCount++ }, result = populationPrediction)
-        Button(
-            onClick = { calculatePrediction() },
-            modifier = Modifier
-                .padding(top = 16.dp)
-                .fillMaxWidth()
-        ) {
-            Text(text = stringResource(R.string.calculate))
-        }
-    }
-}
-
-
 
 
