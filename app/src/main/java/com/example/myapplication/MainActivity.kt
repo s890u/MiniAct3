@@ -32,14 +32,14 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-                myApp()
+                MyApp()
 
         }
     }
 
     @Preview
     @Composable
-    fun myApp() {
+    fun MyApp() {
         MyApplicationTheme {
             Surface(
                 modifier = Modifier.fillMaxSize(),
@@ -101,7 +101,7 @@ class MainActivity : ComponentActivity() {
 
         if (!isLandscape){
             Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                Fnc().callText()
+                Fnc().CallText()
                 StatelessCounter({ poblac++ },result = populationPrediction)
                 Button(
                     onClick = { calculatePrediction() },
@@ -114,14 +114,14 @@ class MainActivity : ComponentActivity() {
                 multiplicador?.let{
                     Text("M: $multiplicador", modifier = Modifier.padding(bottom = 20.dp, top = 10.dp))
                 }
-                Fnc().callImg()
+                Fnc().CallImg()
 
 
             }
         }else{
             Row(modifier = Modifier.fillMaxWidth()) {
                 Column {
-                    Fnc().callText()
+                    Fnc().CallText()
                     StatelessCounter({ poblac++ },result = populationPrediction)
                     Button(onClick = { calculatePrediction() }) {
                         Text(text = stringResource(R.string.calculate))
@@ -130,7 +130,7 @@ class MainActivity : ComponentActivity() {
                 multiplicador?.let{
                     Text("M: $multiplicador", modifier = Modifier.padding(bottom = 20.dp, top = 10.dp))
                 }
-                Fnc().callImg()
+                Fnc().CallImg()
             }
         }
     }

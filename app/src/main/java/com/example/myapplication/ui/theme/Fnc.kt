@@ -7,20 +7,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
 import com.example.myapplication.R
 
 class Fnc { //Funcions
 
     @Composable
-    fun callImg() {
+    fun CallImg() {
         Image(
             painter = painterResource(id = R.drawable.flag),
             contentDescription = "Imagen bandera",
@@ -30,7 +26,7 @@ class Fnc { //Funcions
     }
 
     @Composable
-    fun callText() {
+    fun CallText() {
         Text(text = stringResource(R.string.language))
         Text(text = stringResource(R.string.hello), modifier = Modifier.padding(top =20.dp))
         Text("${stringResource(R.string.current)} ${integerResource(R.integer.poblacio)}", modifier = Modifier.padding(top = 20.dp))
